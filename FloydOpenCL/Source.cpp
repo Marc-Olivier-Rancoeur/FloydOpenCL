@@ -5,6 +5,7 @@ using namespace std;
 
 unsigned int* InitMatrice(const unsigned int& taille);
 void AffichageMatrice(const unsigned int* matrice, const unsigned int& taille);
+void FloydSeq(unsigned int* matrice, const unsigned int& taille);
 
 int main() {
 
@@ -17,6 +18,8 @@ int main() {
 	}
 
 	unsigned int* matrice = InitMatrice(taille);
+	AffichageMatrice(matrice, taille);
+	FloydSeq(matrice, taille);
 	AffichageMatrice(matrice, taille);
 
 	delete matrice;
@@ -48,5 +51,15 @@ void AffichageMatrice(const unsigned int* matrice, const unsigned int& taille) {
 			cout << matrice[(taille * i) + j] << " ";
 		}
 		cout << endl;
+	}
+}
+
+void FloydSeq(unsigned int* matrice, const unsigned int& taille) {
+	for (unsigned int i = 0; i < taille; i++) {
+		for (unsigned int j = 0; j < taille; j++) {
+			for (unsigned int k = 0; k < taille; k++) {
+				matrice[(taille * j) + k] = min(matrice[(taille * j) + k], matrice[(taille * j) + i] + matrice[(taille * i) + k]);
+			}
+		}
 	}
 }
