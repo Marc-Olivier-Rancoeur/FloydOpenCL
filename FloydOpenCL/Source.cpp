@@ -92,12 +92,17 @@ int main() {
 	cout << "Initialisation terminée" << endl;
 
 
+
 	// Début calculs
 	size_t tailleTravailGeneral[2] = { taille, taille };
 
 	auto debut = high_resolution_clock::now();
 	// Appel
-	status = clEnqueueNDRangeKernel(cmdQueue, kernel, 2, nullptr, tailleTravailGeneral, nullptr, 0, nullptr, nullptr);
+	for (unsigned int i = 0; i < taille; i++) {
+		status = clSetKernelArg(kernel, 2, sizeof(int), (void*)&i);
+		status = clEnqueueNDRangeKernel(cmdQueue, kernel, 2, nullptr, tailleTravailGeneral, nullptr, 0, nullptr, nullptr);
+		clFlush(cmdQueue);
+	}
 	clFinish(cmdQueue);
 	auto fin = high_resolution_clock::now();
 	cout << "Calculs terminés" << endl;
@@ -107,7 +112,7 @@ int main() {
 	// Récupération de la matrice
 	clEnqueueReadBuffer(cmdQueue, matriceCL, CL_TRUE, 0, tailleDonnees, matrice, 0, nullptr, nullptr);
 	// Affichage final
-	AffichageMatrice(matrice, taille);
+	//AffichageMatrice(matrice, taille);
 	duration<double> duree = fin - debut;
 	cout << "temps d'exécution : " << duree.count() << endl;
 
