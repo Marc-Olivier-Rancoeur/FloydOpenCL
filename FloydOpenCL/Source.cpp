@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <iostream>
 #include <chrono>
 #include <fstream>
@@ -80,13 +82,14 @@ int main() {
 		printf("%s\n", log);
 		printf("ERREUR A LA COMPILATION: %d\n", status);
 		free(log);
+		return -1;
 	}
 	// Création du kernel
 	kernel = clCreateKernel(programme, "floyd", &status);
 	// Passage des paramètres
 	status = clSetKernelArg(kernel, 0, sizeof(cl_int), (void*)&taille);
 	status = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void*)&matriceCL);
-
+	cout << "Initialisation terminée" << endl;
 
 
 	// Début calculs
@@ -95,13 +98,16 @@ int main() {
 	auto debut = high_resolution_clock::now();
 	// Appel
 	status = clEnqueueNDRangeKernel(cmdQueue, kernel, 2, nullptr, tailleTravailGeneral, nullptr, 0, nullptr, nullptr);
+	clFinish(cmdQueue);
 	auto fin = high_resolution_clock::now();
+	cout << "Calculs terminés" << endl;
 
 
 
 	// Récupération de la matrice
 	clEnqueueReadBuffer(cmdQueue, matriceCL, CL_TRUE, 0, tailleDonnees, matrice, 0, nullptr, nullptr);
 	// Affichage final
+	AffichageMatrice(matrice, taille);
 	duration<double> duree = fin - debut;
 	cout << "temps d'exécution : " << duree.count() << endl;
 
